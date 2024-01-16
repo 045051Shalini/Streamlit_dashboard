@@ -198,18 +198,11 @@ fig_quantity = px.line(
 st.plotly_chart(fig_quantity)
 
 
-
-
-
-
-
-
-
-
 import pandas as pd
 import streamlit as st
 import numpy as np
 import plotly.express as px
+from datetime import datetime
 
 # Load your dataset
 url = 'https://raw.githubusercontent.com/045051Shalini/Dynamic-plots/main/customer_shopping_data.csv'
@@ -302,16 +295,19 @@ st.plotly_chart(fig1_payment)
 st.plotly_chart(fig2_payment)
 st.plotly_chart(fig3_payment)
 
-# Filter data based on selected date
-selected_date = st.sidebar.date_input('Select Date:', value=pd.to_datetime(df['invoice_date']).dt.date.min(), key='date_selector_spending')
-
-# Filter data based on selected date
-filtered_df_spending = df[pd.to_datetime(df['invoice_date']).dt.date == selected_date]
-
 # Filter data based on selected parameters
+# Provide a default date (adjust accordingly)
+default_date = datetime(2022, 1, 1)
+selected_date = st.sidebar.date_input('Select Date:', value=default_date, key='date_selector_spending')
 selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
 selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
 selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
+
+# Filter data based on selected parameters
+filtered_df_spending = df[(pd.to_datetime(df['invoice_date']).dt.date == selected_date) | (selected_date == 'All')]
+filtered_df_spending = filtered_df_spending[(filtered_df_spending['gender'] == selected_gender) | (selected_gender == 'All')]
+filtered_df_spending = filtered_df_spending[(filtered_df_spending['price'].between(selected_price_range[0], selected_price_range[1]))]
+filtered_df_spending = filtered_df_spending[(filtered_df_spending['category'] == selected_category_spending) | (selected_category_spending == 'All')]
 
 # Objective 1: Temporal Money Spent Analysis
 fig1_spending = px.bar(
@@ -365,4 +361,11 @@ fig_quantity = px.line(
 
 # Display the chart
 st.plotly_chart(fig_quantity)
+
+
+
+
+
+
+
 
