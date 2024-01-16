@@ -15,6 +15,9 @@ import plotly.express as px
 url = 'https://raw.githubusercontent.com/045051Shalini/Dynamic-plots/main/customer_shopping_data.csv'
 df = pd.read_csv(url)
 
+
+
+
 # Sidebar filters
 st.sidebar.title("Customer Shopping Insights Dashboard")
 
@@ -109,6 +112,45 @@ selected_date = st.sidebar.select_slider('Select Date:', options=pd.to_datetime(
 selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
 selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
 selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Function to create a date slider
+def create_date_slider(df, label, key):
+    date_options = pd.to_datetime(df['invoice_date'], errors='coerce').dt.date.unique()
+    selected_date = st.sidebar.select_slider(label, options=date_options, key=key)
+    return selected_date
+
+
+# Sidebar filters
+st.sidebar.title("Customer Shopping Insights Dashboard")
+
+# Use the date slider function
+selected_date = create_date_slider(df, 'Select Date:', 'date_selector_spending')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Filter data based on selected parameters
 filtered_df_spending = df[(pd.to_datetime(df['invoice_date']).dt.date == selected_date) | (selected_date == 'All')]
