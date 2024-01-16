@@ -122,19 +122,21 @@ selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + 
 
 
 
-# Function to create a date slider
-def create_date_slider(label, date_options, key):
-    selected_date = st.sidebar.slider(label, min_value=date_options.min(), max_value=date_options.max(), key=key)
-    return selected_date
+# Sidebar filters
+st.sidebar.title("Customer Shopping Insights Dashboard")
 
-# Extract date options and format them
+# Function to create a date range slider
+def create_date_range_slider(label, date_options, key):
+    date_range = st.sidebar.date_input(label, min_value=date_options.min(), max_value=date_options.max(), key=key)
+    return date_range
+
+# Extract date options
 date_options = pd.to_datetime(df['invoice_date']).dt.date.unique()
-formatted_date_options = [date.strftime('%Y-%m-%d') for date in date_options]
 
-# Use the date slider function
-selected_date = create_date_slider('Select Date:', formatted_date_options, 'date_selector_spending')
+# Use the date range slider function
+selected_date_range = create_date_range_slider('Select Date Range:', date_options, 'date_range_selector_spending')
 
-
+selected_date = selected_date_range
 
 
 
