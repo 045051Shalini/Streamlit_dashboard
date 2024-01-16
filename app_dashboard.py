@@ -22,8 +22,9 @@ from datetime import datetime, timedelta
 start_date = datetime(2020, 1, 1)
 end_date = start_date + timedelta(weeks=1)
 
-cols1, _ = st.beta_columns((1, 2))
+cols1, _ = st.columns((1, 2))
 selected_date = cols1.date_input('Select date', min_value=start_date, value=start_date, max_value=end_date)
+
 
 
 
