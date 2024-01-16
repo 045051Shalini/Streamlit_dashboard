@@ -8,6 +8,8 @@ Original file is located at
 """
 import pandas as pd
 import streamlit as st
+import numpy as np
+!pip install plotly
 import plotly.express as px
 
 # Load your dataset
@@ -17,27 +19,17 @@ df = pd.read_csv(url)
 # Sidebar filters
 st.sidebar.title("Customer Shopping Insights Dashboard")
 
-# Common filters
-selected_date = st.sidebar.select_slider('Select Date:', options=pd.to_datetime(df['invoice_date']).dt.date.unique(), key='date_selector')
-selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector')
-selected_category = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector')
-selected_payment_method = st.sidebar.selectbox('Select Payment Method:', ['All'] + list(df['payment_method'].unique()), key='payment_method_selector')
+# Filter for Gender and Category Analysis
+selected_gender_category = st.sidebar.selectbox('Select Gender for Category Analysis:', ['All'] + list(df['gender'].unique()), key='gender_category_selector')
+selected_category = st.sidebar.selectbox('Select Category for Category Analysis:', ['All'] + list(df['category'].unique()), key='category_selector')
 
-# Widget for Price (added only where needed)
-if 'price_range_selector_spending' in st.session_state:
-    selected_price_range = st.session_state.price_range_selector_spending
-else:
-    selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
+# Filter data based on selected gender and category
+filtered_df_category = df[(df['gender'] == selected_gender_category) | (selected_gender_category == 'All')]
+filtered_df_category = filtered_df_category[(filtered_df_category['category'] == selected_category) | (selected_category == 'All')]
 
-# Filter data based on common filters
-filtered_df_common = df[(pd.to_datetime(df['invoice_date']).dt.date == selected_date) | (selected_date == 'All')]
-filtered_df_common = filtered_df_common[(filtered_df_common['gender'] == selected_gender) | (selected_gender == 'All')]
-filtered_df_common = filtered_df_common[(filtered_df_common['category'] == selected_category) | (selected_category == 'All')]
-filtered_df_common = filtered_df_common[(filtered_df_common['payment_method'] == selected_payment_method) | (selected_payment_method == 'All')]
-
-# Objective 1: Gender and Age Analysis (Category)
+# Objective 1: Gender and Age Analysis
 fig1_category = px.histogram(
-    filtered_df_common,
+    filtered_df_category,
     x='age',
     color='payment_method',
     marginal='box',
@@ -46,9 +38,9 @@ fig1_category = px.histogram(
     nbins=20
 )
 
-# Objective 2: Payment Method and Age Patterns (Category)
+# Objective 2: Payment Method and Age Patterns
 fig2_category = px.box(
-    filtered_df_common,
+    filtered_df_category,
     x='payment_method',
     y='age',
     color='payment_method',
@@ -58,7 +50,7 @@ fig2_category = px.box(
 
 # Objective 3: Category-Specific Analysis
 fig3_category = px.histogram(
-    filtered_df_common,
+    filtered_df_category,
     x='age',
     color='category',
     marginal='box',
@@ -72,26 +64,35 @@ st.plotly_chart(fig1_category)
 st.plotly_chart(fig2_category)
 st.plotly_chart(fig3_category)
 
-# Objective 4: Gender Distribution (Payment Method)
-fig4_payment = px.pie(
-    filtered_df_common,
+
+# Filter for Gender and Payment Method Analysis
+selected_gender_payment = st.sidebar.selectbox('Select Gender for Payment Method Analysis:', ['All'] + list(df['gender'].unique()), key='gender_payment_selector')
+selected_payment_method = st.sidebar.selectbox('Select Payment Method for Payment Method Analysis:', ['All'] + list(df['payment_method'].unique()), key='payment_method_selector')
+
+# Filter data based on selected gender and payment method
+filtered_df_payment = df[(df['gender'] == selected_gender_payment) | (selected_gender_payment == 'All')]
+filtered_df_payment = filtered_df_payment[(filtered_df_payment['payment_method'] == selected_payment_method) | (selected_payment_method == 'All')]
+
+# Objective 1: Gender Distribution
+fig1_payment = px.pie(
+    filtered_df_payment,
     names='gender',
     title='Gender Distribution (Payment Method)',
     labels={'gender': 'Gender'},
 )
 
-# Objective 5: Payment Method and Gender Patterns
-fig5_payment = px.pie(
-    filtered_df_common,
+# Objective 2: Payment Method and Gender Patterns
+fig2_payment = px.pie(
+    filtered_df_payment,
     names='shopping_mall',
     color='payment_method',
     title='Payment Method and Gender Patterns',
     labels={'shopping_mall': 'Shopping Mall'},
 )
 
-# Objective 6: Category-Specific Gender Analysis
-fig6_payment = px.pie(
-    filtered_df_common,
+# Objective 3: Category-Specific Gender Analysis
+fig3_payment = px.pie(
+    filtered_df_payment,
     names='shopping_mall',
     color='category',
     title='Category-Specific Gender Analysis',
@@ -99,24 +100,25 @@ fig6_payment = px.pie(
 )
 
 # Display the charts
-st.plotly_chart(fig4_payment)
-st.plotly_chart(fig5_payment)
-st.plotly_chart(fig6_payment)
+st.plotly_chart(fig1_payment)
+st.plotly_chart(fig2_payment)
+st.plotly_chart(fig3_payment)
 
-# Widget for Temporal Money Spent Analysis and Category-Specific Spending Analysis
-if 'price_range_selector_spending' in st.session_state:
-    selected_price_range_spending = st.session_state.price_range_selector_spending
-else:
-    selected_price_range_spending = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
+
+# Filter data based on selected parameters
+selected_date = st.sidebar.select_slider('Select Date:', options=pd.to_datetime(df['invoice_date']).dt.date.unique(), key='date_selector_spending')
+selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
+selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
+selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
 
 # Filter data based on selected parameters
 filtered_df_spending = df[(pd.to_datetime(df['invoice_date']).dt.date == selected_date) | (selected_date == 'All')]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['gender'] == selected_gender) | (selected_gender == 'All')]
-filtered_df_spending = filtered_df_spending[(filtered_df_spending['price'].between(selected_price_range_spending[0], selected_price_range_spending[1]))]
+filtered_df_spending = filtered_df_spending[(filtered_df_spending['price'].between(selected_price_range[0], selected_price_range[1]))]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['category'] == selected_category_spending) | (selected_category_spending == 'All')]
 
-# Objective 7: Temporal Money Spent Analysis
-fig7_spending = px.bar(
+# Objective 1: Temporal Money Spent Analysis
+fig1_spending = px.bar(
     filtered_df_spending.groupby(['invoice_date', 'age']).sum().reset_index(),
     x='invoice_date',
     y='price',
@@ -125,8 +127,8 @@ fig7_spending = px.bar(
     labels={'invoice_date': 'Invoice Date', 'price': 'Total Money Spent', 'age': 'Age'},
 )
 
-# Objective 8: Price and Age Patterns
-fig8_spending = px.scatter(
+# Objective 2: Price and Age Patterns
+fig2_spending = px.scatter(
     filtered_df_spending,
     x='age',
     y='price',
@@ -135,8 +137,8 @@ fig8_spending = px.scatter(
     labels={'age': 'Age', 'price': 'Total Money Spent'},
 )
 
-# Objective 9: Category-Specific Spending Analysis
-fig9_spending = px.bar(
+# Objective 3: Category-Specific Spending Analysis
+fig3_spending = px.bar(
     filtered_df_spending.groupby(['category', 'age']).sum().reset_index(),
     x='category',
     y='price',
@@ -146,11 +148,12 @@ fig9_spending = px.bar(
 )
 
 # Display the charts
-st.plotly_chart(fig7_spending)
-st.plotly_chart(fig8_spending)
-st.plotly_chart(fig9_spending)
+st.plotly_chart(fig1_spending)
+st.plotly_chart(fig2_spending)
+st.plotly_chart(fig3_spending)
 
-# Widget for Category-Specific Cumulative Quantity Analysis
+
+# Filter data based on selected category
 selected_category_quantity = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_quantity')
 
 # Filter data based on selected category
@@ -167,5 +170,4 @@ fig_quantity = px.line(
 
 # Display the chart
 st.plotly_chart(fig_quantity)
-
 
