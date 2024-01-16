@@ -134,7 +134,7 @@ st.sidebar.title("Customer Shopping Insights Dashboard")
 
 # Use the date slider function
 selected_date = create_date_slider(df, 'Select Date:', 'date_selector_spending')
-
+selected_date = filtered_df_spending
 
 
 
