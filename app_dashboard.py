@@ -10,7 +10,6 @@ Original file is located at
 import pandas as pd
 import streamlit as st
 import numpy as np
-!pip install plotly
 import plotly.express as px
 
 # Load your dataset
