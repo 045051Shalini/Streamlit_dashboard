@@ -109,47 +109,36 @@ st.plotly_chart(fig3_payment)
 
 # Filter data based on selected parameters
 #selected_date = st.sidebar.select_slider('Select Date:', options=pd.to_datetime(df['invoice_date']).dt.date.unique(), key='date_selector_spending')
-#selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
-#selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
-#selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
-
-
-
-
-
-
-
-
-
-
-# Filter data based on selected parameters
-date_range = st.sidebar.slider('Select Date Range:', pd.to_datetime(df['invoice_date']).dt.date.min(), pd.to_datetime(df['invoice_date']).dt.date.max(), (pd.to_datetime(df['invoice_date']).dt.date.min(), pd.to_datetime(df['invoice_date']).dt.date.max()), key='date_range_selector_spending')
 selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
 selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
 selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
 
+
+
+
+
+
+
+
+selected_date = st.sidebar.date_input('Select Date:', value=pd.to_datetime(df['invoice_date']).dt.date.min(), key='date_selector_spending')
+
+# Filter data based on selected date
+filtered_df_spending = df[pd.to_datetime(df['invoice_date']).dt.date == selected_date]
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Filter data based on selected parameters
-filtered_df_spending = df[(pd.to_datetime(df['invoice_date']).dt.date >= date_range[0]) & (pd.to_datetime(df['invoice_date']).dt.date <= date_range[1])]
-filtered_df_spending = filtered_df_spending[(filtered_df_spending['gender'] == selected_gender) | (selected_gender == 'All')]
-filtered_df_spending = filtered_df_spending[(filtered_df_spending['price'].between(selected_price_range[0], selected_price_range[1]))]
-filtered_df_spending = filtered_df_spending[(filtered_df_spending['category'] == selected_category_spending) | (selected_category_spending == 'All')]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Filter data based on selected parameters
-filtered_df_spending = df[(pd.to_datetime(df['invoice_date']).dt.date == selected_date) | (selected_date == 'All')]
+#filtered_df_spending = df[(pd.to_datetime(df['invoice_date']).dt.date == selected_date) | (selected_date == 'All')]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['gender'] == selected_gender) | (selected_gender == 'All')]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['price'].between(selected_price_range[0], selected_price_range[1]))]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['category'] == selected_category_spending) | (selected_category_spending == 'All')]
