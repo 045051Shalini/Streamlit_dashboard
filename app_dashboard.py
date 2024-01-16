@@ -297,7 +297,7 @@ st.plotly_chart(fig3_payment)
 
 # Filter data based on selected parameters
 # Provide a default date (adjust accordingly)
-default_date = datetime(2022, 1, 1)
+default_date = datetime(2021, 1, 1)
 selected_date = st.sidebar.date_input('Select Date:', value=default_date, key='date_selector_spending')
 selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
 selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
