@@ -123,12 +123,9 @@ selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + 
 
 
 
-
-
-# Function to create a date slider
 def create_date_slider(df, label, key):
     date_options = pd.to_datetime(df['invoice_date'], errors='coerce').dt.date.unique()
-    selected_date = st.sidebar.select_slider(label, options=date_options, key=key)
+    selected_date = st.sidebar.slider(label, min_value=date_options.min(), max_value=date_options.max(), key=key)
     return selected_date
 
 
@@ -137,6 +134,10 @@ st.sidebar.title("Customer Shopping Insights Dashboard")
 
 # Use the date slider function
 selected_date = create_date_slider(df, 'Select Date:', 'date_selector_spending')
+
+
+
+
 
 
 
