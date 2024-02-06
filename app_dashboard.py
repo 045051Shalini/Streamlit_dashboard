@@ -19,6 +19,9 @@ df = pd.read_csv(url)
 # Sidebar filters
 st.sidebar.title("Customer Shopping Insights Dashboard")
 
+# Common date widget for all plots
+selected_date = st.sidebar.date_input('Select Date:', value=datetime(2021, 1, 1), min_value=datetime(2021, 1, 1), max_value=datetime(2023, 2, 12), key='date_selector')
+
 # Filter for Gender and Category Analysis
 selected_gender_category = st.sidebar.selectbox('Select Gender for Category Analysis:', ['All'] + list(df['gender'].unique()), key='gender_category_selector')
 selected_category = st.sidebar.selectbox('Select Category for Category Analysis:', ['All'] + list(df['category'].unique()), key='category_selector')
@@ -106,11 +109,9 @@ st.plotly_chart(fig3_payment)
 
 
 # Filter data based on selected parameters
-cols1, cols2 = st.columns((1, 2))
-selected_date = cols1.date_input('Select Date:', value=datetime(2021, 1, 1), min_value=datetime(2021, 1, 1), max_value=datetime(2023, 2, 12), key='date_selector_spending', format="DD/MM/YYYY")
-selected_gender = cols2.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
-selected_price_range = cols2.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
-selected_category_spending = cols2.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
+selected_gender = st.sidebar.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
+selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
+selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
 
 # Filter data based on selected parameters
 filtered_df_spending = df[(pd.to_datetime(df['invoice_date'], format='%d/%m/%Y').dt.date == selected_date) | (selected_date == 'All')]
@@ -171,6 +172,7 @@ fig_quantity = px.line(
 
 # Display the chart
 st.plotly_chart(fig_quantity)
+
 
 
 
