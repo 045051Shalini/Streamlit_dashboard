@@ -20,7 +20,11 @@ df = pd.read_csv(url)
 st.sidebar.title("Customer Shopping Insights Dashboard")
 
 # Common date widget for all plots
-selected_date = st.sidebar.date_input('Select Date:', value=datetime(2021, 1, 1), min_value=datetime(2021, 1, 1), max_value=datetime(2023, 2, 12), key='date_selector')
+all_dates_selected = st.sidebar.checkbox("Select all dates")
+if all_dates_selected:
+    selected_date = 'All'
+else:
+    selected_date = st.sidebar.date_input('Select Date:', value=datetime(2021, 1, 1), min_value=datetime(2021, 1, 1), max_value=datetime(2023, 2, 12), key='date_selector')
 
 # Filter for Gender and Category Analysis
 selected_gender_category = st.sidebar.selectbox('Select Gender for Category Analysis:', ['All'] + list(df['gender'].unique()), key='gender_category_selector')
@@ -114,7 +118,10 @@ selected_price_range = st.sidebar.slider('Select Price Range:', df['price'].min(
 selected_category_spending = st.sidebar.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
 
 # Filter data based on selected parameters
-filtered_df_spending = df[(pd.to_datetime(df['invoice_date'], format='%d/%m/%Y').dt.date == selected_date) | (selected_date == 'All')]
+if selected_date != 'All':
+    filtered_df_spending = df[(pd.to_datetime(df['invoice_date'], format='%d/%m/%Y').dt.date == selected_date)]
+else:
+    filtered_df_spending = df.copy()
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['gender'] == selected_gender) | (selected_gender == 'All')]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['price'].between(selected_price_range[0], selected_price_range[1]))]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['category'] == selected_category_spending) | (selected_category_spending == 'All')]
