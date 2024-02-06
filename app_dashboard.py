@@ -10,11 +10,17 @@ Original file is located at
 
 
 
+
+
+
+
+
+
 import pandas as pd
 import streamlit as st
 import numpy as np
 import plotly.express as px
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # Load your dataset
 url = 'https://raw.githubusercontent.com/045051Shalini/Dynamic-plots/main/customer_shopping_data.csv'
@@ -111,13 +117,13 @@ st.plotly_chart(fig3_payment)
 
 # Filter data based on selected parameters
 cols1, cols2 = st.columns((1, 2))
-selected_date = cols1.date_input('Select Date:', value=pd.to_datetime(df['invoice_date'], format='%d/%m/%y')).dt.date.min(), key='date_selector_spending')
+selected_date = cols1.date_input('Select Date:', min_value=datetime.strptime('5/8/2022', '%m/%d/%Y'), max_value=datetime.today(), key='date_selector_spending')
 selected_gender = cols2.selectbox('Select Gender:', ['All'] + list(df['gender'].unique()), key='gender_selector_spending')
 selected_price_range = cols2.slider('Select Price Range:', df['price'].min(), df['price'].max(), (df['price'].min(), df['price'].max()), key='price_range_selector_spending')
 selected_category_spending = cols2.selectbox('Select Category:', ['All'] + list(df['category'].unique()), key='category_selector_spending')
 
 # Filter data based on selected parameters
-filtered_df_spending = df[(pd.to_datetime(df['invoice_date'], format='%d/%m/%y').dt.date == selected_date) | (selected_date == 'All')]
+filtered_df_spending = df[(pd.to_datetime(df['invoice_date']).dt.date == selected_date) | (selected_date == 'All')]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['gender'] == selected_gender) | (selected_gender == 'All')]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['price'].between(selected_price_range[0], selected_price_range[1]))]
 filtered_df_spending = filtered_df_spending[(filtered_df_spending['category'] == selected_category_spending) | (selected_category_spending == 'All')]
@@ -174,8 +180,7 @@ fig_quantity = px.line(
 )
 
 # Display the chart
-st.plotly_chart(fig_quantity)
-
+st.plotly
 
 
 
