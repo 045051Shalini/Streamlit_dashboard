@@ -9,7 +9,6 @@ Original file is located at
 
 import pandas as pd
 import streamlit as st
-import numpy as np
 import plotly.express as px
 from datetime import datetime
 
@@ -172,6 +171,7 @@ fig_quantity = px.line(
 
 # Display the chart
 st.plotly_chart(fig_quantity)
+
 
 
 
