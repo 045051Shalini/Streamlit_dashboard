@@ -9,6 +9,7 @@ Original file is located at
 
 import pandas as pd
 import streamlit as st
+import plotly
 import plotly.express as px
 from datetime import datetime
 
